@@ -18,7 +18,16 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+    public Text BestScoreText;
+    public static int bestScore;
+
+    public static bool isChanged;
+
+    private void Awake()
+    {
+        MenuManager.Instance.LoadBestPlayer();
+        BestScoreText.text = "Best Score: " + MenuManager.Instance.bestPlayerName + ": " + MenuManager.Instance.bestScoreee;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +66,7 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                isChanged = true;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
@@ -70,7 +80,25 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        BestScore();
         m_GameOver = true;
         GameOverText.SetActive(true);
+    }
+
+    void BestScore()
+    {
+        MenuManager.Instance.LoadBestPlayer();
+        if (m_Points > MenuManager.Instance.bestScoreee)
+        {
+            MenuManager.Instance.bestScoreee = m_Points;
+            MenuManager.Instance.bestPlayerName = MenuManager.Instance.playerName;
+            BestScoreText.text = "Best Score: " + MenuManager.Instance.bestPlayerName + ": " + MenuManager.Instance.bestScoreee;
+            MenuManager.Instance.SaveBestPlayer();
+        }
+        else
+        {
+            // Will I need to load MenuManager.Instance.LoadBestPlayer ?
+            BestScoreText.text = "Best Score: " + MenuManager.Instance.bestPlayerName + ": " + MenuManager.Instance.bestScoreee;
+        }
     }
 }
